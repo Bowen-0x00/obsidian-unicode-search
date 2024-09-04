@@ -24,6 +24,7 @@ import {ParsedUsageInfo} from "../../libraries/types/savedata/parsedUsageInfo";
 
 export class FuzzySearchModal extends SuggestModal<UsedCharacterSearch> {
     private usageStatistics: ReadCache<UsageDisplayStatistics>;
+    obsidianApp: App;
 
     public constructor(
         app: App,
@@ -31,7 +32,7 @@ export class FuzzySearchModal extends SuggestModal<UsedCharacterSearch> {
         private readonly characterService: CharacterService,
     ) {
         super(app);
-
+        this.obsidianApp = app
         super.setInstructions([
             NAVIGATE_INSTRUCTION,
             INSERT_CHAR_INSTRUCTION,
@@ -121,8 +122,23 @@ export class FuzzySearchModal extends SuggestModal<UsedCharacterSearch> {
     }
 
     public override async onChooseSuggestion(search: UsedCharacterSearch, evt: MouseEvent | KeyboardEvent): Promise<void> {
-        this.editor.replaceSelection(search.item.codepoint);
-
+        if (this?.editor)
+            this.editor.replaceSelection(search.item.codepoint);
+        else{
+            // @ts-ignore
+            let view = this.obsidianApp.workspace.getActiveFileView()
+            if (view?.excalidrawData) {
+                let ea = (window as any).ExcalidrawAutomate;
+                let editable = ea.targetView.contentEl.querySelector(".excalidraw-textEditorContainer").firstChild
+                if (editable) {
+                    editable.value += search.item.codepoint
+                } else {
+                    let id = ea.addText(0, 0, search.item.codepoint)
+                    await ea.addElementsToView(true, false, false);
+                    ea.clear()
+                }
+            }
+        }
         try {
             await this.characterService.recordUsage(search.item.codepoint);
         } catch (error) {

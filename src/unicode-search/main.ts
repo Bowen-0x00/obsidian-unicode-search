@@ -53,6 +53,22 @@ export default class UnicodeSearchPlugin extends Plugin {
                 return true;
             },
         });
+        super.addCommand({
+            id: "search-unicode-chars",
+            name: "Search Unicode characters",
+
+            callback: () => {
+                const modal = new FuzzySearchModal(
+                    app,
+                    // @ts-ignore
+                    null,
+                    characterService,
+                );
+                modal.open();
+                return true;
+            },
+        });
+        
 
         this.addSettingTab(new SettingTab(
             this.app,
