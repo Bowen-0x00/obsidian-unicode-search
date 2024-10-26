@@ -133,6 +133,7 @@ export class FuzzySearchModal extends SuggestModal<UsedCharacterSearch> {
                 if (editable) {
                     editable.value += search.item.codepoint
                 } else {
+                    ea.clear()
                     let id = ea.addText(0, 0, search.item.codepoint)
                     await ea.addElementsToView(true, false, false);
                     ea.clear()

@@ -54,8 +54,8 @@ export default class UnicodeSearchPlugin extends Plugin {
             },
         });
         super.addCommand({
-            id: "search-unicode-chars",
-            name: "Search Unicode characters",
+            id: "search-unicode-chars-excalidraw",
+            name: "Search Unicode characters to Excalidraw",
 
             callback: () => {
                 const modal = new FuzzySearchModal(
